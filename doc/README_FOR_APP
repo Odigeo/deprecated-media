@@ -1,0 +1,7 @@
+The Media service is a RESTful API service, speaking JSON.
+
+It's used to manage static media files such as web site images, mp3s, swf files, etc.
+ 
+The service manages a Riak node cluster via an internal gem load balancer.
+Between the Riak cluster and the web is a caching proxy (Varnish). This yields
+a high-capacity delivery solution with modest backend means.
