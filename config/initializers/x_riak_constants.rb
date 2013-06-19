@@ -11,4 +11,4 @@
 RIAK_NODES = ENV['RIAK_NODES'] || ['10.254.1.23', '10.254.1.31', '10.254.1.236']
 
 # The following is the public Riak hostname to use for HTTP GETs
-RIAK_MEDIA_URL = SOA_API_URL.sub("api.", "media.").sub("forbidden.", "master-media.")
+RIAK_MEDIA_URL = OCEAN_API_URL.sub("api.", "media.").sub("forbidden.", "master-media.")
