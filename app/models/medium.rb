@@ -38,7 +38,7 @@ class Medium < ActiveRecord::Base
                   
   validates :app,          :presence => true
   validates :context,      :presence => true
-  validates :locale,       :presence => true, :format => /^[a-z]{2}-[A-Z]{2}$/
+  validates :locale,       :presence => true, :format => /\A[a-z]{2}-[A-Z]{2}\z/
   validates :name,         :presence => true
   validates :content_type,    :presence => true
   validates :lock_version, :presence => true
