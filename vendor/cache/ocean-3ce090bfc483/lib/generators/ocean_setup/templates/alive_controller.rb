@@ -11,9 +11,8 @@ class AliveController < ApplicationController
 
 
   def index
-    Medium.count
+    # If there is a DB, call to it here to ensure it too is healthy
     render :text => "ALIVE", :status => 200
-    logger.info "ALIVE"
   end
   
 end

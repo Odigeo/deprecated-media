@@ -5,7 +5,7 @@ class MediaController < ApplicationController
 
   respond_to :json
 
-  before_filter :find_medium, :only => [:show, :update, :destroy]
+  before_action :find_medium, :only => [:show, :update, :destroy]
     
   
   # GET /media
