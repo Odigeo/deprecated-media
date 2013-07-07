@@ -1,22 +1,21 @@
 require 'spec_helper'
 
-describe MediaController do
+describe <%= class_name.pluralize %>Controller do
   
-  #render_views
-  
-  
+  render_views
+
   describe "INDEX" do
     
-    before do
-      Medium.delete_all
+    before :each do
       Api.stub(:permitted?).and_return(double(:status => 200, 
                                                :body => {'authentication' => {'user_id' => 123}}))
-      create :medium
-      create :medium
-      create :medium
+      create :<%= singular_name %>
+      create :<%= singular_name %>
+      create :<%= singular_name %>
       request.headers['HTTP_ACCEPT'] = "application/json"
       request.headers['X-API-Token'] = "boy-is-this-fake"
     end
+
     
     it "should return JSON" do
       get :index
@@ -38,7 +37,7 @@ describe MediaController do
       response.content_type.should == "application/json"
     end
     
-    it "should return a 403 if the X-API-Token doesn't yield GET authorisation for Media" do
+    it "should return a 403 if the X-API-Token doesn't yield GET authorisation for <%= class_name.pluralize %>" do
       Api.stub(:permitted?).and_return(double(:status => 403, :body => {:_api_error => []}))
       get :index
       response.status.should == 403
@@ -48,21 +47,21 @@ describe MediaController do
     it "should return a 200 when successful" do
       get :index
       response.status.should == 200
+      response.should render_template(partial: "_<%= singular_name %>", count: 3)
     end
-    
+
     it "should accept match and search parameters" do
-      Medium.should_receive(:index).with(a_kind_of(Hash), nil, 'ue').and_return([])
+      <%= class_name %>.should_receive(:index).with(anything, nil, 'ue').and_return([])
       get :index, app: 'foo', search: 'ue'
       response.status.should == 200
     end
     
     it "should accept a group parameter" do
-      Medium.should_receive(:index).with(anything, 'context', nil).and_return([])
-      get :index, app: 'foo', group: :context
+      <%= class_name %>.should_receive(:index).with(anything, 'name', nil).and_return([])
+      get :index, app: 'foo', group: :name
       response.status.should == 200
     end
     
-
   end
   
 end

@@ -1,22 +1,20 @@
 require 'spec_helper'
 
-describe MediaController do
+describe <%= class_name.pluralize %>Controller do
   
   render_views
-  
-  
+
   describe "PUT" do
     
-    before do
-      Medium.delete_all
+    before :each do
       Api.stub(:permitted?).and_return(double(:status => 200, 
                                                :body => {'authentication' => {'user_id' => 123}}))
       request.headers['HTTP_ACCEPT'] = "application/json"
       request.headers['X-API-Token'] = "incredibly-fake!"
-      @m = create :medium
-      @args = @m.attributes
+      @u = create :<%= singular_name %>
+      @args = @u.attributes
     end
-
+     
 
     it "should return JSON" do
       put :update, @args
@@ -51,24 +49,13 @@ describe MediaController do
     end
 
     it "should return a 422 when resource properties are missing (all must be set simultaneously)" do
-      put :update, id: @m.id
+      put :update, id: @u.id
       response.status.should == 422
       response.content_type.should == "application/json"
-      JSON.parse(response.body).should == {"_api_error"=>["Missing resource attributes"]}
     end
 
-    # Uncomment this test as soon as there is one or more DB attributes that need
-    # validating.
-    #
-    # it "should return a 422 when there are validation errors" do
-    #   put :update, @args.merge(:locale => "nix-DORF")
-    #   response.status.should == 422
-    #   response.content_type.should == "application/json"
-    #   JSON.parse(response.body).should == {"locale"=>["ISO language code format required ('de-AU')"]}
-    # end
-
     it "should return a 409 when there is an update conflict" do
-      @m.update_attributes!({:updated_at => 1.week.from_now}, :without_protection => true)
+      @u.update_attributes!({:updated_at => 1.week.from_now}, :without_protection => true)
       put :update, @args
       response.status.should == 409
     end
@@ -76,11 +63,7 @@ describe MediaController do
     it "should return a 200 when successful" do
       put :update, @args
       response.status.should == 200
-    end
-
-     it "should render the object partial when successful" do
-      put :update, @args
-      response.should render_template(partial: '_medium', count: 1)
+      response.should render_template(partial: "_<%= singular_name %>", count: 1)
     end
 
     it "should return the updated resource in the body when successful" do
@@ -89,15 +72,30 @@ describe MediaController do
       JSON.parse(response.body).should be_a Hash
     end
 
-    it "should not require the payload to be included" do
-      @args['payload'] = nil
-      @args['tags'] = "foo bar baz"
-      Storage.should_not_receive(:update_medium)
-      put :update, @args
-      @m.reload
-      @m.tags.should == "foo bar baz"
-    end
-    
-  end
+    #
+    # Uncomment this test as soon as there is one or more DB attributes that need
+    # validating.
+    #
+    # it "should return a 422 when there are validation errors" do
+    #   put :update, @args.merge('name' => "qz")
+    #   response.status.should == 422
+    #   response.content_type.should == "application/json"
+    #   JSON.parse(response.body).should == {"name"=>["is too short (minimum is 3 characters)"]}
+    # end
 
+
+    # it "should alter the <%= singular_name %> when successful" do
+    #   @u.name.should == @args['name']
+    #   @u.description.should == @args['description']
+    #   @args['name'] = "zalagadoola"
+    #   @args['description'] = "menchikaboola"
+    #   put :update, @args
+    #   response.status.should == 200
+    #   @u.reload
+    #   @u.name.should == "zalagadoola"
+    #   @u.description.should == "menchikaboola"
+    # end
+
+  end
+  
 end

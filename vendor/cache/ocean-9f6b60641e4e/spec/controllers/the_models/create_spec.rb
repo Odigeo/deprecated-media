@@ -1,21 +1,19 @@
 require 'spec_helper'
 
-describe MediaController do
+describe TheModelsController do
   
   render_views
   
-  
   describe "POST" do
     
-    before do
-      Medium.delete_all
+    before :each do
       Api.stub(:permitted?).and_return(double(:status => 200, 
                                                :body => {'authentication' => {'user_id' => 123}}))
       request.headers['HTTP_ACCEPT'] = "application/json"
       request.headers['X-API-Token'] = "incredibly-fake!"
-      @args = {app: "the_app", context: "the_context", locale: "sv-SE", name: "the_name",
-               content_type: "image/jpeg", file_name: "my_pic.jpg"}
+      @args = build(:the_model).attributes
     end
+    
     
     it "should return JSON" do
       post :create, @args
@@ -36,34 +34,34 @@ describe MediaController do
       response.content_type.should == "application/json"
     end
 
-    it "should return a 403 if the X-API-Token doesn't yield POST authorisation for Media" do
+    it "should return a 403 if the X-API-Token doesn't yield POST authorisation for TheModels" do
       Api.stub(:permitted?).and_return(double(:status => 403, :body => {:_api_error => []}))
       post :create, @args
       response.status.should == 403
       response.content_type.should == "application/json"
     end
 
-    it "should return a 422 if the medium already exists" do
+    it "should return a 422 if the the_model already exists" do
       post :create, @args
       response.status.should == 201
       response.content_type.should == "application/json"
       post :create, @args
       response.status.should == 422
       response.content_type.should == "application/json"
-      JSON.parse(response.body).should == {"_api_error" => ["Medium already exists"]}
+      JSON.parse(response.body).should == {"_api_error" => ["TheModel already exists"]}
     end
 
     it "should return a 422 when there are validation errors" do
-      post :create, @args.merge(:locale => "nix-DORF")
+      post :create, @args.merge('name' => "qz")
       response.status.should == 422
       response.content_type.should == "application/json"
-      JSON.parse(response.body).should == {"locale"=>["is invalid"]}
+      JSON.parse(response.body).should == {"name"=>["is too short (minimum is 3 characters)"]}
     end
                 
     it "should return a 201 when successful" do
       post :create, @args
+      response.should render_template(partial: "_the_model", count: 1)
       response.status.should == 201
-      response.should render_template(partial: '_medium', count: 1)
     end
 
     it "should contain a Location header when successful" do
