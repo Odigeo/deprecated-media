@@ -13,7 +13,7 @@ class MediaController < ApplicationController
     expires_in 0, 's-maxage' => 30.minutes
     if stale?(collection_etag(Medium))
       @media = Medium.index(params, params[:group], params[:search])
-      render partial: "medium", collection: @media
+      api_render @media
     end
   end
 
@@ -22,7 +22,7 @@ class MediaController < ApplicationController
   def show
     expires_in 0, 's-maxage' => 30.minutes
     if stale?(@medium)
-      render partial: "medium", object: @medium
+      api_render @medium
     end
   end
 
@@ -64,7 +64,7 @@ class MediaController < ApplicationController
     if @medium.valid?
       Api.ban "/v1/media/#{@medium.id}"
       Api.ban "/v1/media"
-      render partial: "medium", object: @medium
+      api_render @medium
     else
       render_validation_errors(@medium)
     end
