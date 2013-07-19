@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MediaController do
   
-  #render_views
+  render_views
   
   
   describe "INDEX" do
@@ -48,6 +48,13 @@ describe MediaController do
     it "should return a 200 when successful" do
       get :index
       response.status.should == 200
+      response.should render_template(partial: "_medium", count: 3)
+    end
+
+    it "should return a collection" do
+      get :index
+      response.status.should == 200
+      JSON.parse(response.body).should be_an Array
     end
     
     it "should accept match and search parameters" do
