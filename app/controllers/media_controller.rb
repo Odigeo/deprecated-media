@@ -40,7 +40,7 @@ class MediaController < ApplicationController
         return
       end
       Api.ban "/v1/media"
-      render_new_resource @medium, partial: "media/medium"
+      api_render @medium, new: true
     else
       render_validation_errors @medium
     end
