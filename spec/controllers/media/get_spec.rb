@@ -9,8 +9,7 @@ describe MediaController do
     
     before do
       Medium.delete_all
-      Api.stub(:permitted?).and_return(double(:status => 200, 
-                                               :body => {'authentication' => {'user_id' => 123}}))
+      permit_with 200
       @medium = create :medium
       request.headers['HTTP_ACCEPT'] = "application/json"
       request.headers['X-API-Token'] = "totally-fake"
