@@ -12,7 +12,7 @@ class MediaController < ApplicationController
   def index
     expires_in 0, 's-maxage' => 30.minutes
     if stale?(collection_etag(Medium))
-      @media = Medium.index(params, params[:group], params[:search])
+      @media = Medium.collection(params)
       api_render @media
     end
   end

@@ -56,19 +56,6 @@ describe MediaController do
       JSON.parse(response.body).should be_an Array
     end
     
-    it "should accept match and search parameters" do
-      Medium.should_receive(:index).with(a_kind_of(Hash), nil, 'ue').and_return([])
-      get :index, app: 'foo', search: 'ue'
-      response.status.should == 200
-    end
-    
-    it "should accept a group parameter" do
-      Medium.should_receive(:index).with(anything, 'context', nil).and_return([])
-      get :index, app: 'foo', group: :context
-      response.status.should == 200
-    end
-    
-
   end
   
 end

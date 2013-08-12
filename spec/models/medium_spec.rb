@@ -155,16 +155,9 @@ describe Medium do
       m.destroy
     end
   end
-
-
-  describe ".index_only" do
-    it "should return an array of permitted search query args" do
-      Medium.index_only.should be_an Array
-    end
-  end
   
   
-  describe ".index" do
+  describe ".collection" do
     before :all do
       Medium.destroy_all
       create :medium, app: 'foo', context: 'alfa', name: 'ett',  locale: 'sv-SE'
@@ -177,70 +170,70 @@ describe Medium do
     end
     
     it "should return an array of Medium instances" do
-      ix = Medium.index
+      ix = Medium.collection
       ix.length.should == 7
       ix[0].should be_a Medium
     end
     
     it "should allow matches on app" do
-      Medium.index(app: 'NOWAI').length.should == 0
-      Medium.index(app: 'foo').length.should == 4
-      Medium.index(app: 'bar').length.should == 3
+      Medium.collection(app: 'NOWAI').length.should == 0
+      Medium.collection(app: 'foo').length.should == 4
+      Medium.collection(app: 'bar').length.should == 3
     end
     
     it "should allow matches on context" do
-      Medium.index(context: 'NOWAI').length.should == 0
-      Medium.index(context: 'alfa').length.should == 3
-      Medium.index(context: 'beta').length.should == 1
-      Medium.index(context: 'zoo').length.should == 2
-      Medium.index(context: 'xux').length.should == 1
+      Medium.collection(context: 'NOWAI').length.should == 0
+      Medium.collection(context: 'alfa').length.should == 3
+      Medium.collection(context: 'beta').length.should == 1
+      Medium.collection(context: 'zoo').length.should == 2
+      Medium.collection(context: 'xux').length.should == 1
     end
     
     it "should allow matches on name" do
-      Medium.index(name: 'NOWAI').length.should == 0
-      Medium.index(name: 'ett').length.should == 3
-      Medium.index(name: 'gokk').length.should == 4
+      Medium.collection(name: 'NOWAI').length.should == 0
+      Medium.collection(name: 'ett').length.should == 3
+      Medium.collection(name: 'gokk').length.should == 4
     end
     
     it "should allow matches on locale" do
-      Medium.index(locale: 'NOWAI').length.should == 0
-      Medium.index(locale: 'sv-SE').length.should == 3
-      Medium.index(locale: 'no-NO').length.should == 1
-      Medium.index(locale: 'da-DK').length.should == 1
-      Medium.index(locale: 'en-GB').length.should == 2
+      Medium.collection(locale: 'NOWAI').length.should == 0
+      Medium.collection(locale: 'sv-SE').length.should == 3
+      Medium.collection(locale: 'no-NO').length.should == 1
+      Medium.collection(locale: 'da-DK').length.should == 1
+      Medium.collection(locale: 'en-GB').length.should == 2
     end
     
     it "should allow searches on app and context" do
-      Medium.index(app: 'bar', context: 'zoo').length.should == 2
-      Medium.index(app: 'bar', context: 'xux').length.should == 1
-      Medium.index(app: 'bar', context: 'NOWAI').length.should == 0
-      Medium.index(app: 'NOWAY', context: 'zoo').length.should == 0
+      Medium.collection(app: 'bar', context: 'zoo').length.should == 2
+      Medium.collection(app: 'bar', context: 'xux').length.should == 1
+      Medium.collection(app: 'bar', context: 'NOWAI').length.should == 0
+      Medium.collection(app: 'NOWAY', context: 'zoo').length.should == 0
     end
     
     it "key/value pairs not in the index_only array should quietly be ignored" do
-      Medium.index(app: 'foo', aardvark: 12).length.should == 4
+      Medium.collection(app: 'foo', aardvark: 12).length.should == 4
     end
     
     
     describe "should permit menu grouping" do
       
       it "to list the existing apps" do
-        media = Medium.index({}, :app)
+        media = Medium.collection(group: :app)
         media.length.should == 2
       end
       
       it "to give all the contexts in an app" do
-        media = Medium.index({app: 'bar'}, :context)
+        media = Medium.collection(app: 'bar', group: :context)
         media.length.should == 2
       end
       
       it "to give all the names in an app and context" do
-        media = Medium.index({app: 'bar', context: 'zoo'}, :name)
+        media = Medium.collection(app: 'bar', context: 'zoo', group: :name)
         media.length.should == 1
       end
       
       it "to list all the locales" do
-        media = Medium.index({}, :locale)
+        media = Medium.collection(group: :locale)
         media.length.should == 4
       end
       
