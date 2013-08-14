@@ -31,19 +31,8 @@ class MediaController < ApplicationController
   def create
     @medium = Medium.new(filtered_params Medium)
     set_updater(@medium)
-    if @medium.valid?
-      begin
-        @medium.save!
-      rescue ActiveRecord::RecordNotUnique, ActiveRecord::StatementInvalid, 
-             SQLite3::ConstraintException 
-        render_api_error 422, "Medium already exists"
-        return
-      end
-      Api.ban "/v1/media"
-      api_render @medium, new: true
-    else
-      render_validation_errors @medium
-    end
+    @medium.save!
+    api_render @medium, new: true
   end
 
 
@@ -53,21 +42,12 @@ class MediaController < ApplicationController
       render_api_error 422, "Missing resource attributes"
       return
     end
-    begin
-      @medium.assign_attributes(filtered_params Medium)
-      set_updater(@medium)
-      @medium.save
-    rescue ActiveRecord::StaleObjectError
-      render_api_error 409, "Stale Medium"
-      return
-    end
-    if @medium.valid?
-      Api.ban "/v1/media/#{@medium.id}"
-      Api.ban "/v1/media"
-      api_render @medium
-    else
-      render_validation_errors(@medium)
-    end
+    @medium.assign_attributes(filtered_params Medium)
+    set_updater(@medium)
+    @medium.save!
+    api_render @medium
+    Api.ban "/v1/media/#{@medium.id}"
+    Api.ban "/v1/media"
   end
 
 
