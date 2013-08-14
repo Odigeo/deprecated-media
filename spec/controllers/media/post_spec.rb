@@ -49,7 +49,7 @@ describe MediaController do
       post :create, @args
       response.status.should == 422
       response.content_type.should == "application/json"
-      JSON.parse(response.body).should == {"_api_error" => ["Medium already exists"]}
+      JSON.parse(response.body).should == {"_api_error" => ["Resource not unique"]}
     end
 
     it "should return a 422 when there are validation errors" do
