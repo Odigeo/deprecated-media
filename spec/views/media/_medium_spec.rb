@@ -5,7 +5,7 @@ describe "media/_medium" do
   
   before :each do
     Medium.delete_all
-    m = create(:medium, url: "https://static.odigeoservices.com/riak/76sdgfs/sd6tisf",
+    m = create(:medium, url: "https://static.example.com/riak/76sdgfs/sd6tisf",
                         content_type: 'image/jpeg')
     render partial: "media/medium", locals: {medium: m}
     @json = JSON.parse(rendered)
