@@ -105,7 +105,7 @@ describe Medium do
   it "URLs for a Medium should follow a specific format" do
     m = create :medium
     b = Storage.double_bucket m.app
-    m.url.should == "https://master-media.travelservices.se/riak/#{b}/#{m.context}-#{m.name}-#{m.locale}-#{m.file_name}"
+    m.url.should == "https://master-media.odigeoservices.com/riak/#{b}/#{m.context}-#{m.name}-#{m.locale}-#{m.file_name}"
   end
     
   
