@@ -8,7 +8,11 @@
 
 # The following gives you the Riak nodes in the Master environment
 # NB: Hardcoding the Riak node IPs in this way is not ideal.
-RIAK_NODES = ENV['RIAK_NODES'] || ['10.254.1.23', '10.254.1.31', '10.254.1.236']
+RIAK_NODES = ENV['RIAK_NODES'] || 
+             ['10.254.131.27', 
+              '10.254.141.215', 
+              '10.254.131.139',
+              '10.254.141.10']
 
 # The following is the public Riak hostname to use for HTTP GETs
 RIAK_MEDIA_URL = OCEAN_API_URL.sub("api.", "media.").sub("forbidden.", "master-media.")
