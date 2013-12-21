@@ -70,6 +70,9 @@ module Media
 
     # Enable the asset pipeline
     config.assets.enabled = false
+
+    # No locales
+    I18n.enforce_available_locales = false
   end  
   
 end
