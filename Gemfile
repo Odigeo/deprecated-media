@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
-gem "rails", "~> 4.1.0"
-gem "ocean-rails"
+gem 'rails', '~> 4.1.0'
+gem "ocean-rails", ">= 2.11.2"
 
 gem 'pg'             # PostgreSQL client
 gem 'foreigner'      # Foreign key constraints in MySQL, PostgreSQL, and SQLite3.
