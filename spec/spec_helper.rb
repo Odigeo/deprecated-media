@@ -47,4 +47,7 @@ RSpec.configure do |config|
   # care-free concurrency of tests in TC.
   config.before(:all) {$riak_bucket_prefix = "#{Rails.env}-#{rand(100000000)}-"}
   config.after(:all)  {$riak_bucket_prefix = nil}
+
+  # RSpec 3 compatibility
+  config.infer_spec_type_from_file_location!
 end
