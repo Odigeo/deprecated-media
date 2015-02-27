@@ -3,8 +3,6 @@ class MediaController < ApplicationController
   ocean_resource_controller extra_actions: {},
                             required_attributes: [:lock_version]
 
-  respond_to :json
-
   before_action :find_medium, :only => [:show, :update, :destroy]
     
   
