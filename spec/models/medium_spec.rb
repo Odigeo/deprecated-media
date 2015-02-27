@@ -99,13 +99,13 @@ describe Medium do
   
   it "should have a method to calculate the Riak key, i.e. the final part of its URL" do
     m = create :medium
-    m.riak_key.should be_a String
+    expect(m.riak_key).to be_a String
   end
   
   it "URLs for a Medium should follow a specific format" do
     m = create :medium
     b = Storage.double_bucket m.app
-    m.url.should == "#{RIAK_MEDIA_URL}/riak/#{b}/#{m.context}-#{m.name}-#{m.locale}-#{m.file_name}"
+    expect(m.url).to eq("#{RIAK_MEDIA_URL}/riak/#{b}/#{m.context}-#{m.name}-#{m.locale}-#{m.file_name}")
   end
     
   
@@ -116,34 +116,34 @@ describe Medium do
     
     it "should set the instance variable @payload" do
       m = create :medium, payload: "usygfuyggss", content_type: "text/plain"
-      m.payload.should == "usygfuyggss"
+      expect(m.payload).to eq("usygfuyggss")
     end
     
     it "should not be stored with the Medium instance" do
       create :medium, payload: "usygfuyggss", content_type: "text/plain", name: "foobar"
       m = Medium.find_by_name "foobar"
-      m.payload.should == nil
+      expect(m.payload).to eq(nil)
     end
     
     it "should trigger the method create_on_riak if the Media resource is new" do
-      Medium.any_instance.should_receive(:create_on_riak)
+      expect_any_instance_of(Medium).to receive(:create_on_riak)
       m = create :medium, payload: "hej", content_type: "text/plain"
     end
         
     it "should trigger the method update_on_riak if the Media resource already exists" do
       m = create :medium
-      Medium.any_instance.should_receive(:update_on_riak)
+      expect_any_instance_of(Medium).to receive(:update_on_riak)
       m.update_attributes!(payload: "tjo", content_type: "text/plain")
     end
     
     it "if present, should call Storage.create_medium for a new record" do
-      Storage.should_receive(:create_medium).with(an_instance_of(Medium))
+      expect(Storage).to receive(:create_medium).with(an_instance_of(Medium))
       create :medium, payload: "udyfg", content_type: "text/plain"
     end
     
     it "if present, should call Storage.update_medium for an update" do
       m = create :medium
-      Storage.should_receive(:update_medium).with(m)
+      expect(Storage).to receive(:update_medium).with(m)
       m.update_attributes! payload: "sduyf", content_type: "text/plain"
     end
   end
@@ -151,7 +151,7 @@ describe Medium do
   describe "destroy" do
     it "should delete the media from the Riak cluster" do
       m = create :medium
-      Storage.should_receive(:delete_medium).with(m)
+      expect(Storage).to receive(:delete_medium).with(m)
       m.destroy
     end
   end
@@ -171,47 +171,47 @@ describe Medium do
     
     it "should return an array of Medium instances" do
       ix = Medium.collection
-      ix.length.should == 7
-      ix[0].should be_a Medium
+      expect(ix.length).to eq(7)
+      expect(ix[0]).to be_a Medium
     end
     
     it "should allow matches on app" do
-      Medium.collection(app: 'NOWAI').length.should == 0
-      Medium.collection(app: 'foo').length.should == 4
-      Medium.collection(app: 'bar').length.should == 3
+      expect(Medium.collection(app: 'NOWAI').length).to eq(0)
+      expect(Medium.collection(app: 'foo').length).to eq(4)
+      expect(Medium.collection(app: 'bar').length).to eq(3)
     end
     
     it "should allow matches on context" do
-      Medium.collection(context: 'NOWAI').length.should == 0
-      Medium.collection(context: 'alfa').length.should == 3
-      Medium.collection(context: 'beta').length.should == 1
-      Medium.collection(context: 'zoo').length.should == 2
-      Medium.collection(context: 'xux').length.should == 1
+      expect(Medium.collection(context: 'NOWAI').length).to eq(0)
+      expect(Medium.collection(context: 'alfa').length).to eq(3)
+      expect(Medium.collection(context: 'beta').length).to eq(1)
+      expect(Medium.collection(context: 'zoo').length).to eq(2)
+      expect(Medium.collection(context: 'xux').length).to eq(1)
     end
     
     it "should allow matches on name" do
-      Medium.collection(name: 'NOWAI').length.should == 0
-      Medium.collection(name: 'ett').length.should == 3
-      Medium.collection(name: 'gokk').length.should == 4
+      expect(Medium.collection(name: 'NOWAI').length).to eq(0)
+      expect(Medium.collection(name: 'ett').length).to eq(3)
+      expect(Medium.collection(name: 'gokk').length).to eq(4)
     end
     
     it "should allow matches on locale" do
-      Medium.collection(locale: 'NOWAI').length.should == 0
-      Medium.collection(locale: 'sv-SE').length.should == 3
-      Medium.collection(locale: 'no-NO').length.should == 1
-      Medium.collection(locale: 'da-DK').length.should == 1
-      Medium.collection(locale: 'en-GB').length.should == 2
+      expect(Medium.collection(locale: 'NOWAI').length).to eq(0)
+      expect(Medium.collection(locale: 'sv-SE').length).to eq(3)
+      expect(Medium.collection(locale: 'no-NO').length).to eq(1)
+      expect(Medium.collection(locale: 'da-DK').length).to eq(1)
+      expect(Medium.collection(locale: 'en-GB').length).to eq(2)
     end
     
     it "should allow searches on app and context" do
-      Medium.collection(app: 'bar', context: 'zoo').length.should == 2
-      Medium.collection(app: 'bar', context: 'xux').length.should == 1
-      Medium.collection(app: 'bar', context: 'NOWAI').length.should == 0
-      Medium.collection(app: 'NOWAY', context: 'zoo').length.should == 0
+      expect(Medium.collection(app: 'bar', context: 'zoo').length).to eq(2)
+      expect(Medium.collection(app: 'bar', context: 'xux').length).to eq(1)
+      expect(Medium.collection(app: 'bar', context: 'NOWAI').length).to eq(0)
+      expect(Medium.collection(app: 'NOWAY', context: 'zoo').length).to eq(0)
     end
     
     it "key/value pairs not in the index_only array should quietly be ignored" do
-      Medium.collection(app: 'foo', aardvark: 12).length.should == 4
+      expect(Medium.collection(app: 'foo', aardvark: 12).length).to eq(4)
     end
     
     
@@ -219,22 +219,22 @@ describe Medium do
       
       it "to list the existing apps" do
         media = Medium.collection(group: :app)
-        media.length.should == 2
+        expect(media.length).to eq(2)
       end
       
       it "to give all the contexts in an app" do
         media = Medium.collection(app: 'bar', group: :context)
-        media.length.should == 2
+        expect(media.length).to eq(2)
       end
       
       it "to give all the names in an app and context" do
         media = Medium.collection(app: 'bar', context: 'zoo', group: :name)
-        media.length.should == 1
+        expect(media.length).to eq(1)
       end
       
       it "to list all the locales" do
         media = Medium.collection(group: :locale)
-        media.length.should == 4
+        expect(media.length).to eq(4)
       end
       
     end
